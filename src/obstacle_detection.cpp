@@ -8,7 +8,7 @@ Obstacle_Detection::Obstacle_Detection(const ros::NodeHandle &nh,
     : nh_(nh),
       pnh_(pnh),
       y_limit_m_(1.5),
-      tolerance_m_(0.2) {
+      tolerance_m_(1.2) {
   ROS_INFO("Obstalcle_Detection: initializing");
 
   obstacle_sub_ = nh_.subscribe("/velodyne_points", 1,
@@ -117,8 +117,8 @@ void Obstacle_Detection::Filter(
       for (int j = 0; (!angle_assigned) && (j < 7); j++) {
         //Check the angle
         if (-15.1 + 2 * j < alpha_deg && alpha_deg < -14.9 + 2 * j) {
-          if (!(*(inter_d_ptr + j) - tolerance_m_ < check_d
-              && check_d < *(inter_d_ptr + j) + tolerance_m_)) {
+          if (!(*(inter_d_ptr + j) - tolerance_m_*(1+0.1*j) < check_d
+              && check_d < *(inter_d_ptr + j) + tolerance_m_*(1+0.1*j))) {
             filtered_cloud.push_back(temp_cloud.points[i]);
           }
         }
@@ -163,10 +163,10 @@ void Obstacle_Detection::scan(const sensor_msgs::PointCloud2& cloud_message) {
     }
   }
 
-  int sum[6] = { 0, 0, 0, 0, 0, 0 };  //number of points in the interval
-  double inter_d[6] = { 0.0, 0.0, 0.0, 0.0, 0.0, 0.0 };  //distance most points had
+  int sum[7] = { 0, 0, 0, 0, 0, 0, 0 };  //number of points in the interval
+  double inter_d[7] = { 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0 };  //distance most points had
 
-  for (int i = 0; i < 6; i++) {
+  for (int i = 0; i < 7; i++) {
     std::vector < std::vector<double> > &d_histo_temp =
         *(Front.d_histo_ptr_[i]);
     //Search distance intervall, in which most points are found
