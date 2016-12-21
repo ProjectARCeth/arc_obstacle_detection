@@ -150,7 +150,7 @@ void Obstacle_Detection::GridMap(pcl::PointCloud<pcl::PointXYZ>& filtered_cloud,
   double back_tolerance = -20;
   double width = 120;
   double height = 400;
-  double resolution=0.10;
+  double resolution = 0.10;
 
   grid.info.resolution = resolution;
   grid.info.width = width;
@@ -165,7 +165,7 @@ void Obstacle_Detection::GridMap(pcl::PointCloud<pcl::PointXYZ>& filtered_cloud,
   pose.orientation.w = 1;
   grid.info.origin = pose;
 
-  for (int i = 0; i < (width*height); i++) {
+  for (int i = 0; i < (width * height); i++) {
     grid.data.push_back(0);
   }
 
@@ -176,7 +176,9 @@ void Obstacle_Detection::GridMap(pcl::PointCloud<pcl::PointXYZ>& filtered_cloud,
 
     if ((x > back_tolerance) && (x < front_tolerance) && (y > right_tolerance)
         && (y < left_tolerance)) {
-      int a=round(round(x/resolution) * width + round(y/resolution) + width/2 +(height/2)*width);
+      int a = round(
+          round(x / resolution) * width + round(y / resolution) + width / 2
+              + (height / 2) * width);
       grid.data[a] = 100;
     }
   }
