@@ -7,6 +7,8 @@ find_package(catkin REQUIRED COMPONENTS
 	roscpp
  	pcl_conversions
   	pcl_ros
+	nav_msgs
+	geometry_msgs
 )
 
 
