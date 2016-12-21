@@ -4,6 +4,8 @@
 
 #include <ros/ros.h>
 #include <sensor_msgs/PointCloud2.h>
+#include <nav_msgs/OccupancyGrid.h>
+#include <geometry_msgs/Pose.h>
 #include <pcl_conversions/pcl_conversions.h>
 #include <pcl/point_types.h>
 #include <pcl/PCLPointCloud2.h>
@@ -45,14 +47,17 @@ class Obstacle_Detection {
   void Filter(pcl::PointCloud<pcl::PointXYZ>& filtered_cloud,
               const pcl::PointCloud<pcl::PointXYZ>& temp_cloud,
               double* inter_d_ptr);
+  void GridMap(pcl::PointCloud < pcl::PointXYZ >& filtered_cloud, nav_msgs::OccupancyGrid& grid);
 
  private:
   ros::NodeHandle nh_;
   ros::NodeHandle pnh_;
   ros::Publisher obstacle_pub_;
+  ros::Publisher gridmap_pub_;
   ros::Subscriber obstacle_sub_;
   double y_limit_m_;
   double tolerance_m_;
+  double tolerance_factor_;
 
 };
 
