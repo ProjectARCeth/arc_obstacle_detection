@@ -1,4 +1,4 @@
-#include "../include/obstacle_detection/obstacle_detection.hpp"
+#include "../include/arc_obstacle_detection/obstacle_detection.hpp"
 
 namespace arc {
 namespace obstacle_detection {

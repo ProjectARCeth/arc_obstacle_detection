@@ -1,4 +1,4 @@
-#include "../include/obstacle_detection//obstacle_detection.hpp"
+#include "../include/arc_obstacle_detection//obstacle_detection.hpp"
 
 int main(int argc, char** argv) {
   ros::init(argc, argv, "obstacle_detection");
