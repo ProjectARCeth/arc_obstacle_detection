@@ -10,15 +10,12 @@ Obstacle_Detection::Obstacle_Detection(const ros::NodeHandle &nh,
       y_limit_m_(1.5),
       tolerance_m_(1),
       tolerance_factor_(0.12) {
-  ROS_INFO("Obstalcle_Detection: initializing");
 
   obstacle_sub_ = nh_.subscribe("/velodyne_points", 1,
                                 &Obstacle_Detection::functionCallback, this);
 
   obstacle_pub_ = nh_.advertise < sensor_msgs::PointCloud2 > ("/obstacles", 1);
   gridmap_pub_ = nh_.advertise < nav_msgs::OccupancyGrid > ("/gridmap", 1);
-
-  ROS_INFO("Obstacle_Detection: initialized!");
 
 }
 
