@@ -9,6 +9,7 @@ find_package(catkin_simple 0.1.0 REQUIRED COMPONENTS
   	pcl_ros
 	nav_msgs
 	geometry_msgs
+	std_msgs
 	catkin_simple REQUIRED
 )
 

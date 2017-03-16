@@ -14,6 +14,9 @@ Obstacle_Detection::Obstacle_Detection(const ros::NodeHandle &nh,
   obstacle_sub_ = nh_.subscribe("/velodyne_points", 1,
                                 &Obstacle_Detection::functionCallback, this);
 
+  shutdown_sub_ = nh_.subscribe("/state/stop", 1,
+   &Obstacle_Detection::shut_down, this);
+
   obstacle_pub_ = nh_.advertise < sensor_msgs::PointCloud2 > ("/obstacles", 1);
   gridmap_pub_ = nh_.advertise < nav_msgs::OccupancyGrid > ("/gridmap", 1);
 
@@ -184,9 +187,15 @@ void Obstacle_Detection::GridMap(pcl::PointCloud<pcl::PointXYZ>& filtered_cloud,
 
 }
 
+void Obstacle_Detection::shut_down(const std_msgs::Bool::ConstPtr& msg) {
+  if(&msg!=0) {
+  ros::shutdown();
+  ros::waitForShutdown();
+  }
+}
+
 void Obstacle_Detection::scan(const sensor_msgs::PointCloud2& cloud_message) {
 
-//Clock clock;
   pcl::PointCloud < pcl::PointXYZ > temp_cloud;
   conversion_PC2toPCL(cloud_message, temp_cloud);
 
@@ -262,9 +271,6 @@ void Obstacle_Detection::scan(const sensor_msgs::PointCloud2& cloud_message) {
 
   nav_msgs::OccupancyGrid grid;
   GridMap(filtered_cloud, grid);
-
-//clock.takeTime();
-//std::cout<<"Took " << clock.getRealTime() << " ms to filter the input scan."<<std::endl;
 
 }
 
