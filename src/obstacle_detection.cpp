@@ -111,7 +111,7 @@ void Obstacle_Detection::Filter(
     double x = temp_cloud.points[i].x;
     double y = temp_cloud.points[i].y;
     double z = temp_cloud.points[i].z;
-
+    if (!((x<2.2) && (y>-1) && (y<1) && (x>0)))  {    //Take VI out of the boundary condition
     double check_d = sqrt(x * x + y * y + z * z);
     double alpha_deg = asin(z / check_d) / M_PI * 180;
     bool angle_assigned = false;
@@ -138,6 +138,7 @@ void Obstacle_Detection::Filter(
 
       }  //end of angle check
     }  //end for2
+    }  //end if statement
   }  //end for
 
 }
@@ -209,6 +210,7 @@ void Obstacle_Detection::scan(const sensor_msgs::PointCloud2& cloud_message) {
     double z = temp_cloud.points[i].z;
     //check Range limit
     //if (-y_limit_m_ < y && y < y_limit_m_) {
+    if (!((x<2.2) && (y>-1) && (y<1) && (x>0)))  {    //Take VI out of the boundary condition
     double d = sqrt(x * x + y * y + z * z);
     double alpha_deg = asin(z / d) / M_PI * 180;
     for (int j = 0; (!angle_assigned) && (j < 7); j++) {
@@ -226,8 +228,9 @@ void Obstacle_Detection::scan(const sensor_msgs::PointCloud2& cloud_message) {
         //}
       }
 
-    }
-  }
+    }   //end for 2
+    }   //end if statement
+  }   // end for
 
   int sum[14] = { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 };  //number of points in the interval
   double inter_d[14] = { 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
