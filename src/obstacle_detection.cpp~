@@ -175,7 +175,7 @@ void Obstacle_Detection::GridMap(pcl::PointCloud<pcl::PointXYZ>& filtered_cloud,
     double y = -filtered_cloud[i].y;
     double z = filtered_cloud[i].z;
 
-    if ((x > back_tolerance) && (x < front_tolerance) && (y > (right_tolerance + 0.5968) )
+    if ((x > back_tolerance) && (x < front_tolerance) && (y > (right_tolerance + 0.5968 )
         && (y < left_tolerance)) {
       int a = round(
           round(x / resolution) * width + round((y + 0.54968 )/ resolution) + width / 2
