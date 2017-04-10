@@ -6,10 +6,7 @@ namespace obstacle_detection {
 Obstacle_Detection::Obstacle_Detection(const ros::NodeHandle &nh,
                                        const ros::NodeHandle &pnh)
     : nh_(nh),
-      pnh_(pnh),
-      y_limit_m_(1.5),
-      tolerance_m_(1),
-      tolerance_factor_(0.12) {
+      pnh_(pnh) {
 
   obstacle_sub_ = nh_.subscribe("/velodyne_points", 1,
                                 &Obstacle_Detection::functionCallback, this);
@@ -19,6 +16,9 @@ Obstacle_Detection::Obstacle_Detection(const ros::NodeHandle &nh,
 
   obstacle_pub_ = nh_.advertise < sensor_msgs::PointCloud2 > ("/obstacles", 1);
   gridmap_pub_ = nh_.advertise < nav_msgs::OccupancyGrid > ("/gridmap", 1);
+  nh.getParam("/safety/STATIC_TOLERANCE_LASER", tolerance_m_);
+  nh.getParam("/safety/FACTOR_TOLERANCE_LASER", tolerance_factor_);
+  nh.getParam("/safety/SEARCH_WIDTH", y_limit_m_);
 
 }
 
@@ -175,11 +175,11 @@ void Obstacle_Detection::GridMap(pcl::PointCloud<pcl::PointXYZ>& filtered_cloud,
     double y = -filtered_cloud[i].y;
     double z = filtered_cloud[i].z;
 
-    if ((x > back_tolerance) && (x < front_tolerance) && (y > (right_tolerance + 0.5968) )
+    if ((x > (back_tolerance + 0.5968)) && (x < (front_tolerance + 0.5968)) && (y > right_tolerance)
         && (y < left_tolerance)) {
       int a = round(
-          round(x / resolution) * width + round((y + 0.54968 )/ resolution) + width / 2
-              + (height / 2) * width);
+          round((x + 0.54968)  / resolution) * width + round(y/ resolution) + width / 2
+              + (height / 2) * width-1);
       grid.data[a] = 100;
     }
   }
