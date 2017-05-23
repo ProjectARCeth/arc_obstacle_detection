@@ -29,7 +29,7 @@ Obstacle_Detection::Obstacle_Detection(const ros::NodeHandle &nh,
   tolerance_m_ = 0.3;
   tolerance_factor_ = 0.1;
   y_limit_m_= 2;
-  norm_delta_ = 0.7; // 1
+  norm_delta_ = 0.9; // 1
   angle_ = 20;  //20
   delta_factor_ = 0.0;
   number_points_ = 400;
@@ -40,6 +40,7 @@ Obstacle_Detection::Obstacle_Detection(const ros::NodeHandle &nh,
   points_ptr_[4] = &points_7_;
   points_ptr_[5] = &points_5_;
   points_ptr_[6] = &points_3_;
+  points_ptr_[7] = &points_0_;
 }
 
 Obstacle_Detection::~Obstacle_Detection() {
@@ -72,7 +73,7 @@ void Obstacle_Detection::cloudCallback( const sensor_msgs::PointCloud2& cloud_me
 
 void Obstacle_Detection::steeringAngleCallback(const std_msgs::Float64::ConstPtr& msg) {
   float steering_angle = (msg->data)*180/M_PI;
-  if(fabs(steering_angle)>5) boundary_slope_=tan((msg->data))*2;
+  if(fabs(steering_angle)>2) boundary_slope_=tan((msg->data))*2;
   else boundary_slope_=0;
 }
 
@@ -183,7 +184,16 @@ void Obstacle_Detection::Filter(pcl::PointCloud<pcl::PointXYZ>& filtered_cloud, 
     }// End for
 
     temp_vector.clear();
-}}
+  }
+  std::vector <std::vector<double> > &temp_vector = *(points_ptr_[7]);
+  for(int i=0; i<temp_vector.size();i++) {
+    if(temp_vector[i][0]!=0) {
+     pcl::PointXYZ temp(temp_vector[i][0] ,temp_vector[i][1] , temp_vector[i][2]);
+     filtered_cloud.push_back(temp);
+   }
+  }
+  temp_vector.clear();
+}
 
 void Obstacle_Detection::GridMap(pcl::PointCloud<pcl::PointXYZ>& filtered_cloud,
                                  nav_msgs::OccupancyGrid& grid) {
@@ -235,7 +245,7 @@ void Obstacle_Detection::shut_down(const std_msgs::Bool::ConstPtr& msg) {
 }}
 
 void Obstacle_Detection::scan(const sensor_msgs::PointCloud2& cloud_message) {
-  for(int j=0; j<7; j++) {
+  for(int j=0; j<8; j++) {
     std::vector<double> temp_point;
     temp_point.push_back(0);    //If x=0, vector index was not updated, ignore
     temp_point.push_back(0);
@@ -255,13 +265,13 @@ void Obstacle_Detection::scan(const sensor_msgs::PointCloud2& cloud_message) {
     double z = temp_cloud.points[i].z;
     double d = sqrt(x * x + y * y + z * z);
     double alpha_deg = asin(z / d) / M_PI * 180;
-    for (int j = 0; (!angle_assigned) && (j < 7); j++) {
+    for (int j = 0; (!angle_assigned) && (j<8); j++) {
       if ((-15.1 + 2 * j < alpha_deg) && (alpha_deg < -14.9 + 2 * j)) {
-        if ((-y_limit_m_+boundary_slope_*x < y) && (y < y_limit_m_+boundary_slope_*x)) {
+        angle_assigned = true;        
+        if ((-y_limit_m_+boundary_slope_*x < y) && (y < y_limit_m_+boundary_slope_*x) && (j!=7)) {
           //allocate an distance intevall for the point
           if(fabs(z/x)<tan(angle_*M_PI/180) || (j==0)) {
             histogram_allocation(d, j, Front);
-            angle_assigned = true;
         }}
         if((y < x) && (y > -x)){
           std::vector <std::vector<double> > &temp_vector = *(points_ptr_[j]);

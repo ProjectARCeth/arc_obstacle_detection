@@ -68,7 +68,8 @@ class Obstacle_Detection {
   std::vector<std::vector<double> > points_7_;
   std::vector<std::vector<double> > points_5_;
   std::vector<std::vector<double> > points_3_;
-  std::vector<std::vector<double> >* points_ptr_[7];
+  std::vector<std::vector<double> > points_0_;
+  std::vector<std::vector<double> >* points_ptr_[8];
 };
 
 }  //End obstacle_detection
