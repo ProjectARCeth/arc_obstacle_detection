@@ -283,11 +283,6 @@ void Obstacle_Detection::scan(const sensor_msgs::PointCloud2& cloud_message) {
             temp_vector[index][2] = z;
             temp_vector[index][3] = 1; //1-Obstacles, 0-Street
             std::vector<double> temp;
-            temp.push_back(x);
-            temp.push_back(y);
-            temp.push_back(z);
-            temp.push_back(1);   //1-Obstacles, 0-Street
-            points_ptr_[j]->push_back(temp);
   }}}}}} //End for   
 
   int sum[7] = { 0, 0, 0, 0, 0, 0, 0 };  //number of points in the interval
