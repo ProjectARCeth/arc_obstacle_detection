@@ -29,7 +29,7 @@ Obstacle_Detection::Obstacle_Detection(const ros::NodeHandle &nh,
   tolerance_m_ = 0.3;
   tolerance_factor_ = 0.1;
   y_limit_m_= 2;
-  norm_delta_ = 0.9; // 1
+  norm_delta_ = 0.2; // 0.9
   angle_ = 20;  //20
   delta_factor_ = 0.0;
   number_points_ = 400;
@@ -109,9 +109,9 @@ void Obstacle_Detection::histogram_allocation(double d, int j,
     return;
   } else {
     for (int i = 0; i < d_histo_temp.size(); i++) {
-      float a = d_histo_temp[i][0];
-      if (a - tolerance_m_ * (1 + tolerance_factor_ * j) <= d
-          && d <= a + tolerance_m_ * (1 + tolerance_factor_ * j)) {
+      double distance = d_histo_temp[i][0];
+      if (distance - tolerance_m_ * (1 + tolerance_factor_ * j) <= d
+          && d <= distance + tolerance_m_ * (1 + tolerance_factor_ * j)) {
         //Update the average distance of Intervall and the sum
         d_histo_temp[i][0] = (d_histo_temp[i][1] * d_histo_temp[i][0] + d)
             / (d_histo_temp[i][1] + 1);
