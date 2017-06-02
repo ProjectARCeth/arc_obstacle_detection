@@ -29,10 +29,11 @@ Obstacle_Detection::Obstacle_Detection(const ros::NodeHandle &nh,
   tolerance_m_ = 0.3;
   tolerance_factor_ = 0.1;
   y_limit_m_= 2;
-  norm_delta_ = 0.2; // 0.9
+  norm_delta_ = 0.9; // 0.9
   angle_ = 20;  //20
   delta_factor_ = 0.0;
   number_points_ = 400;
+  height_laser_ = 0.9;
   points_ptr_[0] = &points_15_;
   points_ptr_[1] = &points_13_;
   points_ptr_[2] = &points_11_;
@@ -148,7 +149,7 @@ void Obstacle_Detection::Filter(pcl::PointCloud<pcl::PointXYZ>& filtered_cloud, 
         if(temp_vector[i-1-counter_end][0]) break;
       }
       if(temp_vector[i-1-counter_end][0]==0) continue;
-      if(temp_vector[i][0]>2.2 && (fabs(temp_vector[i][2]/temp_vector[i][0])<tan(angle_*M_PI/180)||(j==0))) {
+      if(temp_vector[i][0]>2.2 && ((fabs(temp_vector[i][2]+height_laser_)/temp_vector[i][0])<tan(angle_*M_PI/180)||(j==0))) {
         if(temp_vector[i][3]==1 && temp_vector[i-1-counter_end][3]==0) {
           double delta_x = temp_vector[i][0] - temp_vector[i-1-counter_end][0];
           double delta_z = temp_vector[i][2] - temp_vector[i-1-counter_end][2];
@@ -270,7 +271,7 @@ void Obstacle_Detection::scan(const sensor_msgs::PointCloud2& cloud_message) {
         angle_assigned = true;        
         if ((-y_limit_m_+boundary_slope_*x < y) && (y < y_limit_m_+boundary_slope_*x) && (j!=7)) {
           //allocate an distance intevall for the point
-          if(fabs(z/x)<tan(angle_*M_PI/180) || (j==0)) {
+          if(fabs((z+height_laser_)/x)<tan(angle_*M_PI/180) || (j==0)) {
             histogram_allocation(d, j, Front);
         }}
         if((y < x) && (y > -x)){

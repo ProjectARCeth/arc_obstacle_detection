@@ -60,6 +60,7 @@ class Obstacle_Detection {
   double norm_delta_;
   double angle_;
   double delta_factor_;
+  double height_laser_;
   int number_points_;
   std::vector<std::vector<double> > points_15_;
   std::vector<std::vector<double> > points_13_;
