@@ -26,10 +26,10 @@ Obstacle_Detection::Obstacle_Detection(const ros::NodeHandle &nh,
   //nh.getParam("/safety/OD_ANGLE", angle_);
   //nh.getParam("/safety/NUMBER_POINTS", number_points_);
   boundary_slope_ = 0;
-  tolerance_m_ = 0.3;
-  tolerance_factor_ = 0.1;
+  tolerance_m_ = 0.5;
+  tolerance_factor_ = 0.3;
   y_limit_m_= 2;
-  norm_delta_ = 0.9; // 0.9
+  norm_delta_ = 0.3; // 0.9
   angle_ = 20;  //20
   delta_factor_ = 0.0;
   number_points_ = 400;
@@ -135,7 +135,8 @@ void Obstacle_Detection::Filter(pcl::PointCloud<pcl::PointXYZ>& filtered_cloud, 
     for(int i=0; i<points_ptr_[j]->size(); i++) {
       double x = temp_vector[i][0];
       double y = temp_vector[i][1];
-      if((x>2.2) && ((-y_limit_m_+boundary_slope_*x < y) && (y < y_limit_m_+boundary_slope_*x))) {              //Check if index was updated 
+      //if((x>2.2) && ((-y_limit_m_+boundary_slope_*x < y) && (y < y_limit_m_+boundary_slope_*x))) {              //Check if index was updated 
+      if((y < x) && (y > -x)) {
         double z = temp_vector[i][2];
         double check_d = sqrt(x*x + y*y + z*z);
           if (*(inter_d_ptr + j) - tolerance_m_ *(1 + tolerance_factor_*j) < check_d && 
